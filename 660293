@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اختبار برمجة فايف إم</title>
+  <style>
+    body {
+      background: url('A_digital_illustration_in_a_futuristic,_cyberpunk,.png') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Tahoma', sans-serif;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    .quiz-container {
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .answers button, #shareBtn {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      background-color: #3a3a3a;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .answers button:hover, #shareBtn:hover {
+      background-color: #5a5a5a;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>📟 اختبار برمجة فايف إم – مع عمر</h1>
+    <div id="quiz"></div>
+    <div id="result"></div>
+    <button id="shareBtn" style="display:none;">📤 شارك نتيجتك مع عمر</button>
+  </div>
+
+  <script>
+    const questions = [
+      { question: "أين تكتب الأوامر التي تؤثر على جميع اللاعبين؟", answers: ["server.lua", "config.lua", "client.lua"], correct: 0 },
+      { question: "ما وظيفة ملف fxmanifest.lua؟", answers: ["يحتوي أسماء الشرطة", "يربط بين قاعدة البيانات", "يحدد معلومات السكربت والملفات المستخدمة"], correct: 2 },
+      { question: "أي من هذه الأحداث يتم تنفيذه فقط على جهاز اللاعب؟", answers: ["TriggerClientEvent", "TriggerServerEvent", "RegisterCommand"], correct: 0 },
+      { question: "ما معنى QBCore.Functions.CreateCallback؟", answers: ["إرسال رسالة للشرطة", "إنشاء رد مخصص يمكن استدعاؤه من client", "تشغيل صوت في السيارة"], correct: 1 },
+      { question: "أين تكتب كود فتح الباب بعد اختراق؟", answers: ["config.lua", "client.lua", "fxmanifest.lua"], correct: 1 },
+      { question: "ما وظيفة ملف config.lua؟", answers: ["تحكم في التصاميم", "تحديد إعدادات السكربت", "حفظ الشخصيات"], correct: 1 },
+      { question: "ماذا يعني RegisterNetEvent؟", answers: ["إرسال رسالة خاصة", "تسجيل حدث يمكن استقباله", "تشغيل مؤثر صوتي"], correct: 1 },
+      { question: "أين يتم عادة وضع الأكواد الخاصة بواجهة المستخدم UI؟", answers: ["server.lua", "html/index.html", "fxmanifest.lua"], correct: 1 },
+      { question: "ما وظيفة exports في fxmanifest؟", answers: ["إخفاء العناصر", "مشاركة الوظائف مع سكربتات أخرى", "تشغيل الأصوات"], correct: 1 },
+      { question: "TriggerServerEvent يستخدم لـ؟", answers: ["تشغيل حدث على الكل", "تشغيل حدث على الخادم", "تشغيل حدث على لاعب محدد"], correct: 1 },
+      { question: "ما نوع الملفات التي يمكن تضمينها في fxmanifest؟", answers: ["lua فقط", "html و css", "كل ما سبق"], correct: 2 },
+      { question: "كيف ترجع بيانات من الخادم إلى اللاعب؟", answers: ["exports فقط", "CreateCallback + TriggerClientEvent", "RegisterCommand"], correct: 1 },
+      { question: "أين تُكتب أكواد الشرطة في qb-policejob؟", answers: ["client/main.lua", "config.lua", "html/ui.js"], correct: 0 },
+      { question: "ما هو QBCore.Shared.Items؟", answers: ["تعريف عناصر داخل السكربت", "تعريف المهمات", "فتح السيارة"], correct: 0 },
+      { question: "كيف تفعّل مهمة تبدأ في وقت محدد؟", answers: ["باستخدام TriggerClientEvent", "استخدام Cron أو Task Scheduler", "داخل fxmanifest"], correct: 1 }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      const quizDiv = document.getElementById("quiz");
+      quizDiv.innerHTML = `
+        <div class="question">
+          <h2>${q.question}</h2>
+          <div class="answers">
+            ${q.answers.map((ans, i) => `<button onclick="answer(${i})">${ans}</button>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function answer(selected) {
+      if (selected === questions[currentQuestion].correct) score++;
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        document.getElementById("quiz").style.display = 'none';
+        const resultText = `نتيجتك: ${score} من ${questions.length} — ${getLevel(score)}`;
+        document.getElementById("result").innerText = resultText;
+        document.getElementById("shareBtn").style.display = 'block';
+        document.getElementById("shareBtn").onclick = () => {
+          const shareText = `💻 شاركت اختبار برمجة فايف إم مع عمر!\n${resultText}\nجربه أنت كمان:`;
+          const shareUrl = window.location.href;
+          const fullMsg = `${shareText}\n${shareUrl}`;
+          navigator.clipboard.writeText(fullMsg).then(() => {
+            alert("تم نسخ نتيجتك مع عمر! شاركها مع أصدقائك ✅");
+          });
+        };
+      }
+    }
+
+    function getLevel(score) {
+      if (score <= 5) return "مبتدئ 💡";
+      if (score <= 10) return "متوسط 🔧";
+      return "محترف 🔥";
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
